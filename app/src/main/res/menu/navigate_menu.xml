@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/item_home"
+        android:title="@string/place_holder_string"
+        android:icon="@drawable/tmp_picture"/>
+    <item android:id="@+id/item_personal"
+        android:title="@string/place_holder_string"
+        android:icon="@drawable/tmp_picture"/>
+    <item
+        android:id="@+id/item_other"
+        android:title="@string/place_holder_string">
+
+        <menu>
+            <item android:id="@+id/item_assistance"
+                android:title="@string/place_holder_string"
+                android:icon="@drawable/tmp_picture"/>
+            <item android:id="@+id/item_version"
+                android:title="@string/place_holder_string"
+                android:icon="@drawable/tmp_picture"/>
+        </menu>
+
+
+    </item>
+
+</menu>

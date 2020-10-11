@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">MyDiaryApp</string>
+    <string name="app_name">Diary</string>
+    <string name="sign_in_title">SIGN IN/UP WITH GOOGLE</string>
+    <string name="terms_and_privacy_policy_title">by continuing you adhere to our terms and privacy policy</string>
+    <string name="place_holder_string">place_holder_string</string>
+    <string name="app_title">Diary App</string>
+
+    <string name="close">close</string>
+    <string name="open">open</string>
 </resources>
