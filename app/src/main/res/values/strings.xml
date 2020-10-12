@@ -7,4 +7,10 @@
 
     <string name="close">close</string>
     <string name="open">open</string>
+    <string name="title">Title</string>
+    <string name="content">content</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="color">Color</string>
+    <string name="delete">Delete</string>
 </resources>

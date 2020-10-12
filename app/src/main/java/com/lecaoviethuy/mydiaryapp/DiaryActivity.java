@@ -1,9 +1,12 @@
 package com.lecaoviethuy.mydiaryapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -38,6 +41,8 @@ public class DiaryActivity extends AppCompatActivity {
 
     private DatabaseReference mNoteDatabase;
 
+    public static final int ADD_NEW_NOTE_CODE = 888;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,29 +54,51 @@ public class DiaryActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == ADD_NEW_NOTE_CODE && resultCode == RESULT_OK){
+            if(data.getSerializableExtra("returnedNote") != null){
+                Note note = (Note) data.getSerializableExtra("returnedNote");
+                mViewModel.addNote(note);
+            }
+        }
+    }
+
     private void initialFirebaseReference() {
         mNoteDatabase = FirebaseDatabase.getInstance().getReference("notes");
         mNoteDatabase.addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(@NonNull DataSnapshot snapshot) {
-            System.out.println("Receive data");
-            List<Note> notes = mViewModel.getNoteLiveData().getValue();
-            notes.clear();
-            for(DataSnapshot dataSnapshot : snapshot.getChildren()){
-                notes.add(dataSnapshot.getValue(Note.class));
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                System.out.println("Receive data");
+                List<Note> notes = mViewModel.getNoteLiveData().getValue();
+                notes.clear();
+                for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                    notes.add(dataSnapshot.getValue(Note.class));
+                }
+                System.out.println("Size: " + notes.size());
+                mAdapter.notifyDataSetChanged();
             }
-            System.out.println("Size: " + notes.size());
-            mAdapter.notifyDataSetChanged();
-        }
 
-        @Override
-        public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-        }
+            }
     });
     }
 
     private void initialEvents() {
+        fabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Note note = new Note();
+                note.setId(mViewModel.getNoteLiveData().getValue().size());
+                Intent intent = new Intent(DiaryActivity.this, NoteDetailActivity.class);
+                intent.putExtra("note", note);
+                intent.putExtra("requestCode", ADD_NEW_NOTE_CODE);
+                startActivityForResult(intent, ADD_NEW_NOTE_CODE);
+            }
+        });
     }
 
     private void initialComponents() {

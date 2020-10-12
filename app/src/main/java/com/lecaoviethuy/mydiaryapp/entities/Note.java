@@ -1,8 +1,9 @@
 package com.lecaoviethuy.mydiaryapp.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Note {
+public class Note implements Serializable {
     private int id;
     private long timestamp;
     private String title;

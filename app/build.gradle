@@ -54,6 +54,9 @@ dependencies {
     // room database
     implementation "androidx.room:room-runtime:2.2.5"
     annotationProcessor "androidx.room:room-compiler:2.2.5"
+
+    // color picker dialog
+    implementation 'petrov.kristiyan:colorpicker-library:1.1.10'
 }
 
 apply plugin: 'com.google.gms.google-services'

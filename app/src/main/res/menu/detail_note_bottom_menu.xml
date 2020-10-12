@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/pick_date_item"
+        android:icon="@drawable/tmp_picture"
+        android:title="@string/date" />
+    <item
+        android:id="@+id/pick_time_item"
+        android:icon="@drawable/tmp_picture"
+        android:title="@string/time" />
+    <item
+        android:id="@+id/pick_color_item"
+        android:icon="@drawable/tmp_picture"
+        android:title="@string/color" />
+    <item
+        android:id="@+id/delete_item"
+        android:icon="@drawable/tmp_picture"
+        android:title="@string/delete" />
+
+</menu>
