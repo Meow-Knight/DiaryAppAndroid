@@ -32,16 +32,12 @@ public class DiaryViewModel extends AndroidViewModel {
         return mNoteLiveData;
     }
 
+    // add note with key is id of note, if note existed in realtime database, will update value
     public void addNote(Note note){
-        mNoteDatabase.child(note.getId() + "").setValue(note).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()){
-                    System.out.println("Success");
-                } else {
-                    System.out.println("Failed");
-                }
-            }
-        });
+        mNoteDatabase.child(note.getId() + "").setValue(note);
+    }
+
+    public void deleteNote(int id){
+        mNoteDatabase.child(id + "").removeValue();
     }
 }

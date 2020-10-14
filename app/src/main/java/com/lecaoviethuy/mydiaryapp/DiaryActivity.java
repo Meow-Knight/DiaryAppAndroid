@@ -42,6 +42,7 @@ public class DiaryActivity extends AppCompatActivity {
     private DatabaseReference mNoteDatabase;
 
     public static final int ADD_NEW_NOTE_CODE = 888;
+    public static final int EDIT_NOTE_CODE = 965;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +64,20 @@ public class DiaryActivity extends AppCompatActivity {
                 mViewModel.addNote(note);
             }
         }
+
+        if(requestCode == EDIT_NOTE_CODE){
+            if(resultCode == RESULT_OK){
+                if(data.getSerializableExtra("returnedNote") != null){
+                    Note note = (Note) data.getSerializableExtra("returnedNote");
+                    mViewModel.addNote(note);
+                }
+            } else if (resultCode == NoteDetailActivity.DELETE_NOTE_CODE){
+                if(data.getSerializableExtra("returnedNote") != null){
+                    Note note = (Note) data.getSerializableExtra("returnedNote");
+                    mViewModel.deleteNote(note.getId());
+                }
+            }
+        }
     }
 
     private void initialFirebaseReference() {
@@ -70,13 +85,11 @@ public class DiaryActivity extends AppCompatActivity {
         mNoteDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                System.out.println("Receive data");
                 List<Note> notes = mViewModel.getNoteLiveData().getValue();
                 notes.clear();
                 for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                     notes.add(dataSnapshot.getValue(Note.class));
                 }
-                System.out.println("Size: " + notes.size());
                 mAdapter.notifyDataSetChanged();
             }
 

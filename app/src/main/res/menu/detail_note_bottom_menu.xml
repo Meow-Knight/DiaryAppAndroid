@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/pick_date_item"
-        android:icon="@drawable/tmp_picture"
+        android:icon="@drawable/ic_baseline_date_range_24"
         android:title="@string/date" />
     <item
         android:id="@+id/pick_time_item"
-        android:icon="@drawable/tmp_picture"
+        android:icon="@drawable/ic_baseline_access_time_24"
         android:title="@string/time" />
     <item
         android:id="@+id/pick_color_item"
-        android:icon="@drawable/tmp_picture"
+        android:icon="@drawable/ic_baseline_color_lens_24"
         android:title="@string/color" />
     <item
         android:id="@+id/delete_item"
-        android:icon="@drawable/tmp_picture"
+        android:icon="@drawable/ic_baseline_delete_24"
         android:title="@string/delete" />
 
 </menu>

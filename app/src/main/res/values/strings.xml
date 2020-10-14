@@ -13,4 +13,6 @@
     <string name="time">Time</string>
     <string name="color">Color</string>
     <string name="delete">Delete</string>
+    <string name="edit_note_title">EDIT NOTE</string>
+    <string name="add_note_title">ADD NOTE</string>
 </resources>

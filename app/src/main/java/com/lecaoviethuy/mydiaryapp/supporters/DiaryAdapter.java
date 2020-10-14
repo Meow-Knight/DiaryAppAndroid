@@ -1,6 +1,7 @@
 package com.lecaoviethuy.mydiaryapp.supporters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,13 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.lecaoviethuy.mydiaryapp.DiaryActivity;
+import com.lecaoviethuy.mydiaryapp.MainActivity;
+import com.lecaoviethuy.mydiaryapp.NoteDetailActivity;
 import com.lecaoviethuy.mydiaryapp.R;
 import com.lecaoviethuy.mydiaryapp.entities.Note;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 
@@ -37,14 +40,10 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Note note = notes.get(position);
+        final Note note = notes.get(position);
         Calendar cal = Calendar.getInstance();
         //
-        System.out.println("cal: " + System.currentTimeMillis() + "note: " + note.getTimestamp());
-        System.out.println("****show note:");
-        System.out.println(note);
-        //
-        long differentDate = ((System.currentTimeMillis() - note.getTimestamp()) / (1000 * 60 * 60 *24));
+        long differentDate = ((System.currentTimeMillis() - note.getTimestamp()) / (1000 * 60 * 60 * 24));
         holder.tvDay.setText(differentDate + " days ago");
 
         cal.setTimeInMillis(note.getTimestamp());
@@ -58,6 +57,19 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.MyViewHolder
         holder.tvTitle.setText(note.getTitle());
         holder.tvContent.setText(note.getContent());
         holder.cvItem.setCardBackgroundColor(note.getColor());
+
+        // set event when click on cardview item -> start NoteDetailActivity to edit this note
+        holder.cvItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, NoteDetailActivity.class);
+                intent.putExtra("note", note);
+                intent.putExtra("requestCode", DiaryActivity.EDIT_NOTE_CODE);
+                if(mContext instanceof DiaryActivity){
+                    ((DiaryActivity) mContext).startActivityForResult(intent, DiaryActivity.EDIT_NOTE_CODE);
+                }
+            }
+        });
     }
 
     @Override

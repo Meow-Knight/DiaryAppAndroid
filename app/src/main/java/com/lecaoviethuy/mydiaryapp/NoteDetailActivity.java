@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,6 +44,8 @@ public class NoteDetailActivity extends AppCompatActivity {
     private TimePickerDialog.OnTimeSetListener mOnTimeSetListener;
     private TimePickerDialog mTimePickerDialog;
     private ColorPicker mColorPicker;
+    private ArrayList<String> colors;
+    private ColorPicker.OnChooseColorListener mChooseColorListener;
     private AlertDialog mDeleteDialog;
 
     // variables
@@ -49,21 +53,41 @@ public class NoteDetailActivity extends AppCompatActivity {
     private Calendar calendar = Calendar.getInstance();
     private Note mNote;
     private int mColor = Color.WHITE;
+    public static final int DELETE_NOTE_CODE = 734;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_detail);
 
+        initialComponents();
+
         Intent intent = getIntent();
         if(intent != null){
             mNote = (Note) intent.getSerializableExtra("note");
-            requestCodeFromParent = intent.getIntExtra("requestCode", DiaryActivity.ADD_NEW_NOTE_CODE);
+            requestCodeFromParent = intent.getIntExtra("requestCode", DiaryActivity.EDIT_NOTE_CODE);
+            if(requestCodeFromParent == DiaryActivity.ADD_NEW_NOTE_CODE){
+                calendar.setTimeInMillis(System.currentTimeMillis());
+                tvTitleActivity.setText(R.string.add_note_title);
+            } else if (requestCodeFromParent == DiaryActivity.EDIT_NOTE_CODE){
+                tvTitleActivity.setText(R.string.edit_note_title);
+                calendar.setTimeInMillis(mNote.getTimestamp());
+                edtTitle.setText(mNote.getTitle());
+                edtContent.setText(mNote.getContent());
+            }
         }
 
-        calendar.setTimeInMillis(System.currentTimeMillis());
+        colors = new ArrayList<>();
+
+        colors.add("#0000FF");
+        colors.add("#FF0000");
+        colors.add("#FFFF00");
+        colors.add("#FF6600");
+        colors.add("#00FF00");
+        colors.add("#6600FF");
+        colors.add("#3399FF");
+        colors.add("#FFFF66");
         initialPickerDialogs();
-        initialComponents();
         initialComponentEvents();
     }
 
@@ -101,9 +125,20 @@ public class NoteDetailActivity extends AppCompatActivity {
         mOnDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int date = calendar.get(Calendar.DAY_OF_MONTH);
+
                 calendar.set(Calendar.YEAR, i);
                 calendar.set(Calendar.MONTH, i1);
                 calendar.set(Calendar.DAY_OF_MONTH, i2);
+
+                if(calendar.getTimeInMillis() > System.currentTimeMillis()){
+                    Toast.makeText(NoteDetailActivity.this, "Invalid date", Toast.LENGTH_SHORT).show();
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, date);
+                }
             }
         };
         mDatePickerDialog = new DatePickerDialog(this
@@ -115,8 +150,17 @@ public class NoteDetailActivity extends AppCompatActivity {
         mOnTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
+                int hour = calendar.get(Calendar.HOUR);
+                int minute = calendar.get(Calendar.MINUTE);
+
                 calendar.set(Calendar.HOUR, i);
                 calendar.set(Calendar.MINUTE, i1);
+
+                if(calendar.getTimeInMillis() > System.currentTimeMillis()){
+                    Toast.makeText(NoteDetailActivity.this, "Invalid date", Toast.LENGTH_SHORT).show();
+                    calendar.set(Calendar.HOUR, hour);
+                    calendar.set(Calendar.MINUTE, minute);
+                }
             }
         };
         mTimePickerDialog = new TimePickerDialog(this
@@ -125,40 +169,27 @@ public class NoteDetailActivity extends AppCompatActivity {
                 , calendar.get(Calendar.MINUTE)
                 , true);
         // for set color item
-        ArrayList<String> colors = new ArrayList<>();
-        colors.add("#0000FF");
-        colors.add("#FF0000");
-        colors.add("#FFFF00");
-        colors.add("#FF6600");
-        colors.add("#00FF00");
-        colors.add("#6600FF");
-        colors.add("#3399FF");
-        colors.add("#FFFF66");
-        mColorPicker = new ColorPicker(this);
-        mColorPicker.setColors(colors)
-                .setColumns(colors.size()/2)
-                .setRoundColorButton(true)
-                .setOnChooseColorListener(new ColorPicker.OnChooseColorListener() {
-                    @Override
-                    public void onChooseColor(int position, int color) {
-                        mColor = color;
-                    }
+        mChooseColorListener = new ColorPicker.OnChooseColorListener() {
+            @Override
+            public void onChooseColor(int position, int color) {
+                mColor = color;
+            }
 
-                    @Override
-                    public void onCancel() {
-                    }
-        });
+            @Override
+            public void onCancel() {
+            }
+        };
+
+
         // for delete item
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         builder.setTitle("Confirm")
                 .setMessage("Delete this note?")
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent returnedIntent = new Intent();
-                        mNote = null;
                         returnedIntent.putExtra("returnedNote", mNote);
-                        setResult(RESULT_OK, returnedIntent);
+                        setResult(DELETE_NOTE_CODE, returnedIntent);
                         finish();
                     }
                 })
@@ -169,6 +200,15 @@ public class NoteDetailActivity extends AppCompatActivity {
                     }
                 });
         mDeleteDialog = builder.create();
+    }
+
+    private void createNewColorPickerDialog(){
+        mColorPicker = new ColorPicker(this);
+        mColorPicker.setColors(colors)
+                .setDefaultColorButton(Color.parseColor("#0000FF"))
+                .setColumns(colors.size()/2)
+                .setRoundColorButton(true)
+                .setOnChooseColorListener(mChooseColorListener);
     }
 
     private void initialComponents() {
@@ -184,6 +224,7 @@ public class NoteDetailActivity extends AppCompatActivity {
                         mTimePickerDialog.show();
                         return true;
                     case R.id.pick_color_item:
+                        createNewColorPickerDialog();
                         mColorPicker.show();
                         return true;
                     case R.id.delete_item:
