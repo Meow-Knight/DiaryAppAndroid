@@ -102,7 +102,7 @@ public class NoteDetailActivity extends AppCompatActivity {
         ivApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // check if title and context had value -> finish acitvity
+                // check if title and context had value -> finish activity
                 // else show a toast and return void;
                 if(edtTitle.getText().toString().isEmpty() || edtContent.getText().toString().isEmpty()){
                     Toast.makeText(NoteDetailActivity.this, "Please enter full information", Toast.LENGTH_SHORT).show();

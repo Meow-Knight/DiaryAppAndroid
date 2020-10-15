@@ -57,6 +57,9 @@ dependencies {
 
     // color picker dialog
     implementation 'petrov.kristiyan:colorpicker-library:1.1.10'
+
+    // picasso
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

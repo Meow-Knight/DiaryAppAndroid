@@ -15,4 +15,7 @@
     <string name="delete">Delete</string>
     <string name="edit_note_title">EDIT NOTE</string>
     <string name="add_note_title">ADD NOTE</string>
+    <string name="home">home</string>
+    <string name="assistance">assistance</string>
+    <string name="app_version">app version</string>
 </resources>

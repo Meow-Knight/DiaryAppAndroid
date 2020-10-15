@@ -1,14 +1,18 @@
 package com.lecaoviethuy.mydiaryapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -17,6 +21,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.lecaoviethuy.mydiaryapp.entities.Note;
 import com.lecaoviethuy.mydiaryapp.supporters.DiaryAdapter;
 import com.lecaoviethuy.mydiaryapp.supporters.DiaryViewModel;
+import com.makeramen.roundedimageview.RoundedImageView;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -32,6 +41,9 @@ public class DiaryActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle mToggle;
+    private RoundedImageView rivAvatar;
+    private TextView tvName;
+    private TextView tvEmail;
 
     private RecyclerView rvDiary;
     private DiaryAdapter mAdapter;
@@ -40,6 +52,7 @@ public class DiaryActivity extends AppCompatActivity {
     private FloatingActionButton fabAdd;
 
     private DatabaseReference mNoteDatabase;
+    private FirebaseUser mUser;
 
     public static final int ADD_NEW_NOTE_CODE = 888;
     public static final int EDIT_NOTE_CODE = 965;
@@ -49,10 +62,10 @@ public class DiaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_diary);
 
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         initialComponents();
         initialFirebaseReference();
         initialEvents();
-
     }
 
     @Override
@@ -112,6 +125,23 @@ public class DiaryActivity extends AppCompatActivity {
                 startActivityForResult(intent, ADD_NEW_NOTE_CODE);
             }
         });
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.item_home:
+                        drawerLayout.closeDrawer(GravityCompat.START);
+                        break;
+                    case R.id.item_assistance:
+                        Toast.makeText(DiaryActivity.this, "This function has not supported", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.item_version:
+                        Toast.makeText(DiaryActivity.this, "Diary App version 1.0", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            }
+        });
     }
 
     private void initialComponents() {
@@ -129,11 +159,25 @@ public class DiaryActivity extends AppCompatActivity {
 
         // navigation drawer
         drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_info);
+        navigationView = findViewById(R.id.navigationView);
+        navigationView.setItemIconTintList(null);
         mToggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(mToggle);
         mToggle.syncState();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        View headerView = navigationView.getHeaderView(0);
+        rivAvatar = headerView.findViewById(R.id.riv_avatar);
+        tvName = headerView.findViewById(R.id.tv_name);
+        tvEmail = headerView.findViewById(R.id.tv_email);
+
+        for (UserInfo profile : mUser.getProviderData()) {
+            // Name, email address, and profile photo Url
+            tvName.setText(profile.getDisplayName());
+            tvEmail.setText(profile.getEmail());
+            Uri photoUrl = profile.getPhotoUrl();
+            Picasso.with(DiaryActivity.this).load(photoUrl).into(rivAvatar);
+        }
 
         //
         fabAdd = findViewById(R.id.fab_add);
@@ -146,4 +190,6 @@ public class DiaryActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 }

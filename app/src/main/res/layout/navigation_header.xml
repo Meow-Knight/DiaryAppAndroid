@@ -6,10 +6,10 @@
     android:paddingTop="20dp"
     android:paddingStart="20dp"
     android:paddingBottom="30dp"
-    android:background="@drawable/ic_launcher_background">
+    android:background="@drawable/header_background">
 
     <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/riv_vw_avatar"
+        android:id="@+id/riv_avatar"
         android:layout_width="70dp"
         android:layout_height="70dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,30 +21,31 @@
         android:id="@+id/support_view"
         android:layout_width="1dp"
         android:layout_height="1dp"
-        app:layout_constraintTop_toTopOf="@+id/riv_vw_avatar"
-        app:layout_constraintBottom_toBottomOf="@+id/riv_vw_avatar"
-        app:layout_constraintStart_toStartOf="@id/riv_vw_avatar"
-        app:layout_constraintEnd_toEndOf="@id/riv_vw_avatar"/>
+        app:layout_constraintTop_toTopOf="@+id/riv_avatar"
+        app:layout_constraintBottom_toBottomOf="@+id/riv_avatar"
+        app:layout_constraintStart_toStartOf="@id/riv_avatar"
+        app:layout_constraintEnd_toEndOf="@id/riv_avatar"/>
 
     <TextView
-        android:id="@+id/tv_header_nw_name"
+        android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lê Cao Việt Huy"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toEndOf="@+id/riv_vw_avatar"
+        android:text="@string/place_holder_string"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toEndOf="@+id/riv_avatar"
         app:layout_constraintBottom_toTopOf="@id/support_view"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:textSize="18sp"/>
 
     <TextView
-        android:id="@+id/tv_header_nw_status"
+        android:id="@+id/tv_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/tv_header_nw_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_header_nw_name"
-        android:text="Actived"
-        android:textColor="#0F8502"
+        app:layout_constraintStart_toStartOf="@id/tv_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_name"
+        android:text="@string/place_holder_string"
+        android:textColor="@color/red"
+        android:textSize="14sp"
         android:layout_marginTop="5dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
