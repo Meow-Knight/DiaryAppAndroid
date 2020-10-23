@@ -19,6 +19,11 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -43,7 +48,6 @@ public class DiaryActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mToggle;
     private RoundedImageView rivAvatar;
     private TextView tvName;
-    private TextView tvEmail;
 
     private RecyclerView rvDiary;
     private DiaryAdapter mAdapter;
@@ -53,6 +57,7 @@ public class DiaryActivity extends AppCompatActivity {
 
     private DatabaseReference mNoteDatabase;
     private FirebaseUser mUser;
+    private GoogleSignInClient mGoogleSignInClient;
 
     public static final int ADD_NEW_NOTE_CODE = 888;
     public static final int EDIT_NOTE_CODE = 965;
@@ -138,10 +143,25 @@ public class DiaryActivity extends AppCompatActivity {
                         break;
                     case R.id.item_version:
                         Toast.makeText(DiaryActivity.this, "Diary App version 1.0", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.item_logout:
+                        FirebaseAuth.getInstance().signOut();
+                        logout();
+                        finish();
                 }
                 return false;
             }
         });
+    }
+
+    private void logout() {
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut();
     }
 
     private void initialComponents() {
@@ -169,12 +189,10 @@ public class DiaryActivity extends AppCompatActivity {
         View headerView = navigationView.getHeaderView(0);
         rivAvatar = headerView.findViewById(R.id.riv_avatar);
         tvName = headerView.findViewById(R.id.tv_name);
-        tvEmail = headerView.findViewById(R.id.tv_email);
 
         for (UserInfo profile : mUser.getProviderData()) {
             // Name, email address, and profile photo Url
             tvName.setText(profile.getDisplayName());
-            tvEmail.setText(profile.getEmail());
             Uri photoUrl = profile.getPhotoUrl();
             Picasso.with(DiaryActivity.this).load(photoUrl).into(rivAvatar);
         }

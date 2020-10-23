@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if(user != null){
+            System.out.println("User not nullllllllllllllllllllllllllllllllll");
             Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
             startActivity(intent);
         }
@@ -94,11 +95,11 @@ public class MainActivity extends AppCompatActivity {
             } catch (ApiException e){
                 e.printStackTrace();
             }
-
         }
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
+        System.out.println("firebaseAuthWithGoogle");
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mFirebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -106,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
                             progressBar.setVisibility(View.GONE);
-                            FirebaseUser user = mFirebaseAuth.getCurrentUser();
                             Intent intent = new Intent(getApplicationContext(), DiaryActivity.class);
                             startActivity(intent);
                         } else {
@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void signIn() {
+        System.out.println("Sign in ===============================================");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
