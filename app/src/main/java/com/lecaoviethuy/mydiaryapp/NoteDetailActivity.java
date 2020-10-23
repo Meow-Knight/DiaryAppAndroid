@@ -71,6 +71,7 @@ public class NoteDetailActivity extends AppCompatActivity {
                 tvTitleActivity.setText(R.string.add_note_title);
             } else if (requestCodeFromParent == DiaryActivity.EDIT_NOTE_CODE){
                 tvTitleActivity.setText(R.string.edit_note_title);
+                mColor = mNote.getColor();
                 calendar.setTimeInMillis(mNote.getTimestamp());
                 edtTitle.setText(mNote.getTitle());
                 edtContent.setText(mNote.getContent());
@@ -81,7 +82,7 @@ public class NoteDetailActivity extends AppCompatActivity {
 
         colors.add("#0000FF");
         colors.add("#FF0000");
-        colors.add("#FFFF00");
+        colors.add("#FFB6C1");
         colors.add("#FF6600");
         colors.add("#00FF00");
         colors.add("#6600FF");

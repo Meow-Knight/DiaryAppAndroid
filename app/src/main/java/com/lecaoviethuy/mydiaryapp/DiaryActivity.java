@@ -77,6 +77,7 @@ public class DiaryActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == ADD_NEW_NOTE_CODE && resultCode == RESULT_OK){
+            System.out.println("ADD_NEW_NOTE_CODE");
             if(data.getSerializableExtra("returnedNote") != null){
                 Note note = (Note) data.getSerializableExtra("returnedNote");
                 mViewModel.addNote(note);
@@ -84,12 +85,16 @@ public class DiaryActivity extends AppCompatActivity {
         }
 
         if(requestCode == EDIT_NOTE_CODE){
+            System.out.println("EDIT_NOTE_CODE");
             if(resultCode == RESULT_OK){
+                System.out.println("EDIT_NOTE_OKKKKKKK");
                 if(data.getSerializableExtra("returnedNote") != null){
                     Note note = (Note) data.getSerializableExtra("returnedNote");
                     mViewModel.addNote(note);
                 }
             } else if (resultCode == NoteDetailActivity.DELETE_NOTE_CODE){
+                System.out.println("DELETE_NOTE");
+
                 if(data.getSerializableExtra("returnedNote") != null){
                     Note note = (Note) data.getSerializableExtra("returnedNote");
                     mViewModel.deleteNote(note.getId());
@@ -123,7 +128,8 @@ public class DiaryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Note note = new Note();
-                note.setId(mViewModel.getNoteLiveData().getValue().size());
+                List<Note> notes = mViewModel.getNoteLiveData().getValue();
+                note.setId(notes.get(notes.size() - 1).getId() + 1);
                 Intent intent = new Intent(DiaryActivity.this, NoteDetailActivity.class);
                 intent.putExtra("note", note);
                 intent.putExtra("requestCode", ADD_NEW_NOTE_CODE);
@@ -208,6 +214,4 @@ public class DiaryActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }
