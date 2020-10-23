@@ -1,1 +1,1 @@
-MyDiaryApp version1.0 - SNAPSHOT
+MyDiaryApp version1.0
